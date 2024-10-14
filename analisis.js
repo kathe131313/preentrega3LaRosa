@@ -29,7 +29,7 @@ const analisisSangre = [
     { fecha: '19-07-2023', tipoEstudio: 'Vitamina D', resultado: 32.3},
     { fecha: '19-07-2023', tipoEstudio: 'Glucosa', resultado: 0.86},
     { fecha: '19-07-2023', tipoEstudio: 'TSH', resultado: 4.207},
-    { fecha: '19-07-2023', tipoEstudio: 'Triglicéridos', resultado: 40},
+    { fecha: '19-07-2023', tipoEstudio: 'Triglicéridos', resultado: 41.00},
     { fecha: '19-07-2023', tipoEstudio: 'Glóbulos Rojos', resultado: 4.58},
     { fecha: '19-07-2023', tipoEstudio: 'Colesterol', resultado: 157.0},
     { fecha: '18-12-2023', tipoEstudio: 'Vitamina D', resultado: 31.0},
@@ -42,8 +42,8 @@ const analisisSangre = [
     { fecha: '09-10-2024', tipoEstudio: 'Glucosa', resultado: 0.83},
     { fecha: '09-10-2024', tipoEstudio: 'TSH', resultado: 3.05},
     { fecha: '09-10-2024', tipoEstudio: 'Triglicéridos', resultado: 59.0},
-    { fecha: '09-10-2024', tipoEstudio: 'Glóbulos Rojos', resultado: 4.50},
-    { fecha: '09-10-2024', tipoEstudio: 'Colesterol', resultado: 158.0},
+    { fecha: '09-10-2024', tipoEstudio: 'Glóbulos Rojos', resultado: 4.51},
+    { fecha: '09-10-2024', tipoEstudio: 'Colesterol', resultado: 158.0}
 ];
 // Guardar el array en el LocalStorage, primero lo convierte a formato JSON y luego lo guarda
 localStorage.setItem('analisisSangre', JSON.stringify(analisisSangre));
@@ -86,13 +86,19 @@ function generarGrafico(labels, data, estadoResultados, tipoEstudio) {
     const rango = rangosNormales[tipoEstudio];
     const rangoTexto = ` (Normal: ${rango.min} - ${rango.max})`;
 
+    // Asegurar que las etiquetas y los datos estén alineados
+    console.log("Etiquetas: ", labels);
+    console.log("Datos: ", data);
+    const datosValidos = data.filter(val => val !== null && val !== undefined && !isNaN(val));
+
+
     window.myChart = new Chart(ctx, {
         type: 'bar',
         data: {
             labels: labels,
             datasets: [{
                 label:`Resultado del estudio: ${tipoEstudio}${rangoTexto}`,
-                data: data,
+                data: datosValidos,
                 backgroundColor: estadoResultados.map(estado => {
                     if (estado === 'normal') return 'rgba(54, 162, 235, 0.2)'; // Azul para normal
                     if (estado === 'alto') return 'rgba(255, 99, 132, 0.2)';  // Rojo para alto
@@ -115,7 +121,10 @@ function generarGrafico(labels, data, estadoResultados, tipoEstudio) {
         options: {
             scales: {
                 y: {
-                    beginAtZero: false
+                    beginAtZero: false,
+                    ticks: {
+                        precision: 2 // Mostrar dos decimales
+                    }
                 }
             },
             plugins: {
