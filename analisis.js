@@ -82,13 +82,16 @@ function generarGrafico(labels, data, estadoResultados, tipoEstudio) {
     if (window.myChart) {
         window.myChart.destroy();
     }
+    // Acceder a los rangos del tipo de estudio seleccionado
+    const rango = rangosNormales[tipoEstudio];
+    const rangoTexto = ` (Normal: ${rango.min} - ${rango.max})`;
 
     window.myChart = new Chart(ctx, {
         type: 'bar',
         data: {
             labels: labels,
             datasets: [{
-                label: ` ${tipoEstudio}`, // Muestra el nombre del estudio
+                label:`Resultado del estudio: ${tipoEstudio}${rangoTexto}`,
                 data: data,
                 backgroundColor: estadoResultados.map(estado => {
                     if (estado === 'normal') return 'rgba(54, 162, 235, 0.2)'; // Azul para normal
